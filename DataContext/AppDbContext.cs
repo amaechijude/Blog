@@ -9,6 +9,53 @@ namespace Blog.DataContext
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Post>()
+                .HasData(
+                new Post
+                {
+                    Id = 1,
+                    Title = "First Post",
+                    Content = "This is the first post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                },
+                new Post
+                {
+                    Id = 2,
+                    Title = "Second Post",
+                    Content = "This is the second post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                },
+                new Post
+                {
+                    Id = 3,
+                    Title = "Third Post",
+                    Content = "This is the third post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                },
+                new Post
+                {
+                    Id = 4,
+                    Title = "Fourth Post",
+                    Content = "This is the fourth post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                }
+                );
+        }
         public DbSet<Post> Posts { get; set; }
     }
 }
