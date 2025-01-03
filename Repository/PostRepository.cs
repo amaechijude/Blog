@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Repository
 {
-    public class PostRepository(AppDbContext context)
+    public class PostRepository(PostDbContext context)
     {
-        private readonly AppDbContext _context = context;
+        private readonly PostDbContext _context = context;
 
         public async Task<IEnumerable<Post>?> GetAllPosts()
         {

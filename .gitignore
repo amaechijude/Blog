@@ -310,6 +310,10 @@ paket-files/
 
 # FAKE - F# Make
 .fake/
+Migrations/
+/Migrations/
+Migrations
+/Migrations
 
 # CodeRush personal settings
 .cr/personal
