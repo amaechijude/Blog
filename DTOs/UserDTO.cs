@@ -13,6 +13,7 @@ namespace Blog.DTOs
         public string? Email { get; set; }
 
         [Required]
+        [StringLength(1000, MinimumLength = 3)]
         public string? Password { get; set; }
     }
 
