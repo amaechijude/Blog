@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Blog.Model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+namespace Blog.DataContext
+{
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+    {
+        private readonly IPasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Posts)
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+                
+            modelBuilder.Entity<User>()
+                .HasData(
+                 new User
+                 {
+                     Id = 1,
+                     Email = "user1@gmail.com",
+                     PasswordHash = _passwordHasher.HashPassword(new User(), "password"),
+                     JoinedOn = DateTime.Now,
+                 },
+                new User
+                {
+                    Id = 2,
+                    Email = "user2@gmail.com",
+                    PasswordHash = _passwordHasher.HashPassword(new User(), "password"),
+                    JoinedOn = DateTime.Now,
+                }
+                );
+            modelBuilder.Entity<Post>()
+                .HasData(
+                new Post
+                {
+                    Id = 1,
+                    Title = "First Post",
+                    Content = "This is the first post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    UserId = 1,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                },
+                new Post
+                {
+                    Id = 2,
+                    Title = "Second Post",
+                    Content = "This is the second post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    UserId = 2,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                },
+                new Post
+                {
+                    Id = 3,
+                    Title = "Third Post",
+                    Content = "This is the third post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    UserId = 2,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                },
+                new Post
+                {
+                    Id = 4,
+                    Title = "Fourth Post",
+                    Content = "This is the fourth post",
+                    ImageUrl = "https://www.google.com",
+                    Likes = 0,
+                    UserId = 1,
+                    CreatedAt = DateTime.Now,
+                    LastUpdatedAt = DateTime.Now
+                }
+                );
+        }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Post> Posts { get; set; }
+    }
+}
