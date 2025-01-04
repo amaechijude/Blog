@@ -5,12 +5,18 @@ using System.Threading.Tasks;
 using Blog.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Blog.DataContext
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
         private readonly IPasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -31,14 +37,14 @@ namespace Blog.DataContext
                      Id = 1,
                      Email = "user1@gmail.com",
                      PasswordHash = _passwordHasher.HashPassword(new User(), "password"),
-                     JoinedOn = DateTime.Now,
+                     JoinedOn = DateTime.UtcNow,
                  },
                 new User
                 {
                     Id = 2,
                     Email = "user2@gmail.com",
                     PasswordHash = _passwordHasher.HashPassword(new User(), "password"),
-                    JoinedOn = DateTime.Now,
+                    JoinedOn = DateTime.UtcNow,
                 }
                 );
             modelBuilder.Entity<Post>()
@@ -51,8 +57,8 @@ namespace Blog.DataContext
                     ImageUrl = "https://www.google.com",
                     Likes = 0,
                     UserId = 1,
-                    CreatedAt = DateTime.Now,
-                    LastUpdatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
+                    LastUpdatedAt = DateTime.UtcNow
                 },
                 new Post
                 {
@@ -62,8 +68,8 @@ namespace Blog.DataContext
                     ImageUrl = "https://www.google.com",
                     Likes = 0,
                     UserId = 2,
-                    CreatedAt = DateTime.Now,
-                    LastUpdatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
+                    LastUpdatedAt = DateTime.UtcNow
                 },
                 new Post
                 {
@@ -73,8 +79,8 @@ namespace Blog.DataContext
                     ImageUrl = "https://www.google.com",
                     Likes = 0,
                     UserId = 2,
-                    CreatedAt = DateTime.Now,
-                    LastUpdatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
+                    LastUpdatedAt = DateTime.UtcNow
                 },
                 new Post
                 {
@@ -84,8 +90,7 @@ namespace Blog.DataContext
                     ImageUrl = "https://www.google.com",
                     Likes = 0,
                     UserId = 1,
-                    CreatedAt = DateTime.Now,
-                    LastUpdatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
                 }
                 );
         }
