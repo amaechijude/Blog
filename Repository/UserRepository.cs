@@ -24,7 +24,7 @@ namespace Blog.Repository
             return user;
         }
 
-        public async Task<User?> RegisterUser(UserDTO userDTO)
+        public async Task<UserProfileDTO?> RegisterUser(UserDTO userDTO)
         {
             if (string.IsNullOrWhiteSpace(userDTO.Email) || string.IsNullOrWhiteSpace(userDTO.Password))
                 return null;
@@ -36,13 +36,21 @@ namespace Blog.Repository
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, userDTO.Password);
 
-            await _context.Users.AddAsync(user);
+            _context.Users.Add(user);
             // probably generate JWT token here
             await _context.SaveChangesAsync();
-            return user;
+            var userProfile = new UserProfileDTO
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Avatar = user.AvatarURL,
+                JoinedOn = user.JoinedOn
+            };
+            return userProfile;
         }
 
-        public async Task<User?> LoginUser(UserDTO userDTO)
+        public async Task<UserProfileDTO?> LoginUser(UserDTO userDTO)
         {
             if (string.IsNullOrWhiteSpace(userDTO.Email) || string.IsNullOrWhiteSpace(userDTO.Password))
                 return null;
@@ -56,10 +64,20 @@ namespace Blog.Repository
                 return null;
 
             // probably generate JWT token here
-            return user;
+            // probably generate JWT token here
+            await _context.SaveChangesAsync();
+            var userProfile = new UserProfileDTO
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Avatar = user.AvatarURL,
+                JoinedOn = user.JoinedOn
+            };
+            return userProfile;
         }
 
-        public async Task<User?> UpdateUser(int Id, UpdateUserDTO updateUser, HttpRequest request)
+        public async Task<UserProfileDTO?> UpdateUser(int Id, UpdateUserDTO updateUser, HttpRequest request)
         {
             var user = await _context.Users.FindAsync(Id);
             if (user is null)
@@ -73,7 +91,8 @@ namespace Blog.Repository
             var uploaddir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
             if (!Directory.Exists(uploaddir))
                 Directory.CreateDirectory(uploaddir);
-            var filename = $"{Guid.NewGuid().ToString()}_{updateUser.Avatar.FileName}".Replace(" ","");
+
+            var filename = $"{Guid.NewGuid()}_{updateUser.Avatar.FileName}".Replace(" ","");
             var filepath = Path.Combine(uploaddir, filename);
             using (var stream = new FileStream(filepath, FileMode.Create))
             {
@@ -82,8 +101,18 @@ namespace Blog.Repository
                 // Generate the file URL
             user.AvatarURL = $"{request.Scheme}://{request.Host}/images/{filename}";
             }
+
+            // probably generate JWT token here
             await _context.SaveChangesAsync();
-            return user;
+            var userProfile = new UserProfileDTO
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Avatar = user.AvatarURL,
+                JoinedOn = user.JoinedOn
+            };
+            return userProfile;
         }
     }
 }

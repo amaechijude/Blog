@@ -16,8 +16,9 @@ namespace Blog.Controllers
     public class PostController(PostRepository postRepository) : ControllerBase
     {
        private readonly PostRepository _postRepository = postRepository;
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
+        public async Task<IActionResult> GetPosts()
         {
            var posts = await _postRepository.GetAllPosts();
            if (posts is null)

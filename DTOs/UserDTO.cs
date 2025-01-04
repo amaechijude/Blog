@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace Blog.DTOs
 {
+    public class UserProfileDTO
+    {
+        public int Id { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public string? Avatar { get; set; }
+        public DateTime JoinedOn { get; set; }
+    }
     public class UserDTO
     {
         [EmailAddress]
