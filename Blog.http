@@ -1,4 +1,4 @@
-@Blog_HostAddress = http://localhost:5194
+@Blog_HostAddress = http://localhost:5118
 
 GET {{Blog_HostAddress}}/weatherforecast/
 Accept: application/json

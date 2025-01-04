@@ -7,6 +7,7 @@ namespace Blog.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        [HttpGet]
         public IActionResult Get(string result="Amaechi")
         {
             return Ok(result);
