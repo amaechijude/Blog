@@ -15,13 +15,20 @@ namespace Blog.Repository
         private readonly IPasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
         private readonly AppDbContext _context = context;
 
-        public async Task<User?> GetUserById(int Id)
+        public async Task<UserProfileDTO?> GetUserById(int Id)
         {
             var user = await _context.Users.FindAsync(Id);
             if (user is null)
                 return null;
-
-            return user;
+            var userProfile = new UserProfileDTO
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Avatar = user.AvatarURL,
+                JoinedOn = user.JoinedOn
+            };
+            return userProfile;
         }
 
         public async Task<UserProfileDTO?> RegisterUser(UserDTO userDTO)
