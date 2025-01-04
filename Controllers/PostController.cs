@@ -35,5 +35,17 @@ namespace Blog.Controllers
 
             return Ok(post);        
         }
+        [HttpPost("create")]
+        public async Task<IActionResult> CreatePost([FromForm] CreatePostDTO createPost)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var post = await _postRepository.CreatePostAsync(createPost, Request);
+            if (post is null)
+                return BadRequest("Post  creation failed");
+
+            return Ok(post);
+        }
     }
 }
