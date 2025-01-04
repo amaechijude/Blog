@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blog.DataContext;
 using Blog.DTOs;
-using Blog.Model;
+using Blog.Models;
 using Blog.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

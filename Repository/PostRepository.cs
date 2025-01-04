@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.DataContext;
-using Blog.Model;
+using Blog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,18 +18,16 @@ namespace Blog.Repository
             var posts = await _context.Posts
                 .Where(p => !p.IsDeleted)
                 .ToListAsync();
-            if (!posts.Any())
+            if (posts is null || !posts.Any())
                 return null;
-            return posts;
+            return posts is null || !posts.Any() ? null : posts;
         }
 
         public async Task<Post?> GetPostById(int Id)
         {
             var post = await _context.Posts.FindAsync(Id);
-            if (post is null)
-                return null;
 
-            return post;
+            return post is null || post.IsDeleted ? null : post;
         }
     }
 }
