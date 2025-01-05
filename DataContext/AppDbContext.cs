@@ -11,6 +11,8 @@ namespace Blog.DataContext
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
+        public DbSet<User> Users { get; set; }
+        public DbSet<Post> Posts { get; set; }
         private readonly PasswordHasher<User> _passwordHasher = new();
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -25,11 +27,17 @@ namespace Blog.DataContext
                 .WithOne(p => p.User)
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
+            // add unique constraint to email
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
+            // add unique constraint to username
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();   
+
+            // seed data
             modelBuilder.Entity<User>()
                 .HasData(
                  new User
@@ -94,11 +102,6 @@ namespace Blog.DataContext
                 }
                 );
         }
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        public DbSet<User> Users { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        public DbSet<Post> Posts { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
     }
 }

@@ -14,7 +14,7 @@ namespace Blog.DTOs
         public string? Avatar { get; set; }
         public DateTime JoinedOn { get; set; }
     }
-    public class UserDTO
+    public class LoginUserDTO
     {
         [EmailAddress]
         [Required]
@@ -23,6 +23,11 @@ namespace Blog.DTOs
         [Required]
         [StringLength(1000, MinimumLength = 3)]
         public string? Password { get; set; }
+    }
+    public class RegisterUserDTO : LoginUserDTO
+    {
+        [Required]
+        public string? Username { get; set; }
     }
 
     public class UpdateUserDTO

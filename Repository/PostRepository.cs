@@ -33,25 +33,28 @@ namespace Blog.Repository
             {
                 Title = createPost.Title,
                 Content = createPost.Content,
-                UserId = createPost.UserId,
-                User = user,
+                UserId = user is null ? null : createPost.UserId,
                 CreatedAt = DateTime.UtcNow,
                 LastUpdatedAt = DateTime.MinValue,
             };
             if (createPost.Image != null)
             {
-                string uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Posts");
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Posts");
                 if (!Directory.Exists(uploadPath))
                     Directory.CreateDirectory(uploadPath);
 
-                string fileName = $"{Guid.NewGuid()}_{createPost.Image.FileName}".Replace(" ", "");
+                var fileName = $"{Guid.NewGuid()}_{Path.GetExtension(createPost.Image.FileName)}".Replace(" ", "");
                 string filePath = Path.Combine(uploadPath, fileName);
+
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await createPost.Image.CopyToAsync(stream);
                 }
-                post.ImageUrl = $"{request.Scheme}://{request.Host}/images/{fileName}";
+                var imgUrl = $"{request.Scheme}://{request.Host}/Uploads/Posts/{fileName}";
+                post.ImageUrl = imgUrl;
             }
+            user?.Posts.Add(post); // add post to user if user exists
+                
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
             var postView = new PostViewDTO()
@@ -60,7 +63,6 @@ namespace Blog.Repository
                 Title = post.Title,
                 Content = post.Content,
                 UserId = post.UserId,
-                User = post.User,
                 CreatedAt = post.CreatedAt
             };
             return postView;
