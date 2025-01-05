@@ -28,15 +28,20 @@ namespace Blog.Repository
             if (string.IsNullOrWhiteSpace(createPost.Content) || string.IsNullOrWhiteSpace(createPost.Title))
                 return null;
             
-            var user = await _context.Users.FindAsync(createPost.UserId);
+            var user = _context.Users.FirstOrDefault(u => u.Id == createPost.UserId);
             var post = new Post()
             {
                 Title = createPost.Title,
                 Content = createPost.Content,
-                UserId = user is null ? null : createPost.UserId,
                 CreatedAt = DateTime.UtcNow,
                 LastUpdatedAt = DateTime.MinValue,
             };
+            if (user != null)
+            {
+                post.User = user;
+                post.UserId = user.Id;
+                user.Posts.Add(post);
+            }
             if (createPost.Image != null)
             {
                 var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Posts");
@@ -53,7 +58,6 @@ namespace Blog.Repository
                 var imgUrl = $"{request.Scheme}://{request.Host}/Uploads/Posts/{fileName}";
                 post.ImageUrl = imgUrl;
             }
-            user?.Posts.Add(post); // add post to user if user exists
                 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();

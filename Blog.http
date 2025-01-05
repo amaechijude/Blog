@@ -1,6 +1,11 @@
 @Blog_HostAddress = http://localhost:5118
 
-GET {{Blog_HostAddress}}/weatherforecast/
-Accept: application/json
+GET {{Blog_HostAddress}}/api/post/
+
+###
+GET {{Blog_HostAddress}}/api/user/1
+
+###
+GET {{Blog_HostAddress}}/api/user/
 
 ###

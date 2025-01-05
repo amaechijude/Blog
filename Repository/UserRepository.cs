@@ -24,49 +24,52 @@ namespace Blog.Repository
             {
                 Id = user.Id,
                 FullName = user.FullName,
-                Email = user.Email,
-                Avatar = user.AvatarURL,
-                JoinedOn = user.JoinedOn
+                Username = user.Username,
+                AvatarURL = user.AvatarURL,
+                JoinedOn = user.JoinedOn,
+                Posts = user.Posts
             };
             return userProfile;
         }
 
-        public async Task<UserProfileDTO?> RegisterUser(UserDTO userDTO)
+        public async Task<UserProfileDTO?> RegisterUser(RegisterUserDTO registerUser)
         {
-            if (string.IsNullOrWhiteSpace(userDTO.Email) || string.IsNullOrWhiteSpace(userDTO.Password))
+            if (string.IsNullOrWhiteSpace(registerUser.Email) || string.IsNullOrWhiteSpace(registerUser.Password) || string.IsNullOrWhiteSpace(registerUser.Username))
                 return null;
 
             var user = new User
             {
-                Email = userDTO.Email,
+                Email = registerUser.Email,
+                Username = registerUser.Username,
                 JoinedOn = DateTime.Now
             };
-            user.PasswordHash = _passwordHasher.HashPassword(user, userDTO.Password);
-
+            user.PasswordHash = _passwordHasher.HashPassword(user, registerUser.Password);
             _context.Users.Add(user);
+
             // probably generate JWT token here
             await _context.SaveChangesAsync();
             var userProfile = new UserProfileDTO
             {
                 Id = user.Id,
                 FullName = user.FullName,
-                Email = user.Email,
-                Avatar = user.AvatarURL,
-                JoinedOn = user.JoinedOn
+                Username = user.Username,
+                AvatarURL = user.AvatarURL,
+                JoinedOn = user.JoinedOn,
+                Posts = user.Posts
             };
             return userProfile;
         }
 
-        public async Task<UserProfileDTO?> LoginUser(UserDTO userDTO)
+        public async Task<UserProfileDTO?> LoginUser(LoginUserDTO loginUser)
         {
-            if (string.IsNullOrWhiteSpace(userDTO.Email) || string.IsNullOrWhiteSpace(userDTO.Password))
+            if (string.IsNullOrWhiteSpace(loginUser.Email) || string.IsNullOrWhiteSpace(loginUser.Password))
                 return null;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userDTO.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginUser.Email);
             if (user is null || string.IsNullOrWhiteSpace(user.PasswordHash))
                 return null;
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, userDTO.Password);
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginUser.Password);
             if (result == PasswordVerificationResult.Failed)
                 return null;
 
@@ -77,9 +80,10 @@ namespace Blog.Repository
             {
                 Id = user.Id,
                 FullName = user.FullName,
-                Email = user.Email,
-                Avatar = user.AvatarURL,
-                JoinedOn = user.JoinedOn
+                Username = user.Username,
+                AvatarURL = user.AvatarURL,
+                JoinedOn = user.JoinedOn,
+                Posts = user.Posts
             };
             return userProfile;
         }
@@ -115,9 +119,10 @@ namespace Blog.Repository
             {
                 Id = user.Id,
                 FullName = user.FullName,
-                Email = user.Email,
-                Avatar = user.AvatarURL,
-                JoinedOn = user.JoinedOn
+                Username = user.Username,
+                AvatarURL = user.AvatarURL,
+                JoinedOn = user.JoinedOn,
+                Posts = user.Posts
             };
             return userProfile;
         }

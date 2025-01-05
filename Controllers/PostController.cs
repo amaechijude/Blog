@@ -27,7 +27,7 @@ namespace Blog.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPost(int id)
+        public async Task<IActionResult> GetPostById(int id)
         {
            var post = await _postRepository.GetPostById(id);
            if (post is null)
@@ -36,7 +36,7 @@ namespace Blog.Controllers
             return Ok(post);        
         }
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePost([FromForm] CreatePostDTO createPost)
+        public async Task<IActionResult> CreatePost([FromBody] CreatePostDTO createPost)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
