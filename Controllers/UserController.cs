@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.DataContext;
+using Blog.DTOs;
 using Blog.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,18 @@ namespace Blog.Controllers
         private readonly UserRepository _userRepository = userRepository;
         private readonly AppDbContext _context = context;
 
+        [HttpPost("create")]
+        public async  Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO registerUser)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var newUser = await _userRepository.RegisterUser(registerUser);
+            if (newUser is null)
+                return BadRequest("User not registered");
+            
+            return Ok(newUser);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {

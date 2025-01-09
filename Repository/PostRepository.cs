@@ -27,21 +27,22 @@ namespace Blog.Repository
         {
             if (string.IsNullOrWhiteSpace(createPost.Content) || string.IsNullOrWhiteSpace(createPost.Title))
                 return null;
-            
+
             var user = _context.Users.FirstOrDefault(u => u.Id == createPost.UserId);
+            if (user is null)
+                return null;
             var post = new Post()
             {
                 Title = createPost.Title,
                 Content = createPost.Content,
                 CreatedAt = DateTime.UtcNow,
+                UserId = createPost.UserId,
+                User = user;
                 LastUpdatedAt = DateTime.MinValue,
+                Likes = 0,
+                IsDeleted = false
             };
-            if (user != null)
-            {
-                post.User = user;
-                post.UserId = user.Id;
-                user.Posts.Add(post);
-            }
+
             if (createPost.Image != null)
             {
                 var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Posts");
@@ -58,7 +59,7 @@ namespace Blog.Repository
                 var imgUrl = $"{request.Scheme}://{request.Host}/Uploads/Posts/{fileName}";
                 post.ImageUrl = imgUrl;
             }
-                
+
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
             var postView = new PostViewDTO()
@@ -67,7 +68,8 @@ namespace Blog.Repository
                 Title = post.Title,
                 Content = post.Content,
                 UserId = post.UserId,
-                CreatedAt = post.CreatedAt
+                CreatedAt = post.CreatedAt,
+                User = post.User
             };
             return postView;
         }
@@ -86,6 +88,80 @@ namespace Blog.Repository
             var post = await _context.Posts.FindAsync(Id);
 
             return post is null || post.IsDeleted ? null : post;
+        }
+
+        public async Task<PostViewDTO?> UpdatePostAsync(int id, [FromBody] UpdatePostDTO updatePost, HttpRequest request)
+        {
+            var existingPost = await _context.Posts.FindAsync(id);
+            if (existingPost is null)
+                return null;
+
+            if (!string.IsNullOrWhiteSpace(updatePost.Content))
+                existingPost.Content = updatePost.Content;
+            existingPost.LastUpdatedAt = DateTime.UtcNow;
+
+            if (updatePost.Image != null)
+            {
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Posts");
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                var fileName = $"{Guid.NewGuid()}_{Path.GetExtension(updatePost.Image.FileName)}".Replace(" ", "");
+                string filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await updatePost.Image.CopyToAsync(stream);
+                }
+                var imgUrl = $"{request.Scheme}://{request.Host}/Uploads/Posts/{fileName}";
+                existingPost.ImageUrl = imgUrl;
+                existingPost.LastUpdatedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+            var postView = new PostViewDTO()
+            {
+                Id = existingPost.Id,
+                Title = existingPost.Title,
+                Content = existingPost.Content,
+                CreatedAt = existingPost.CreatedAt,
+                LastUpdatedAt = existingPost.LastUpdatedAt,
+                Likes = existingPost.Likes,
+                UserId = existingPost.UserId,
+            };
+            return postView;
+        }
+
+        public async Task<string> DeletePostAsync(int id)
+        {
+            var postToDelete = await _context.Posts.FindAsync(id);
+            if (postToDelete is null || !postToDelete.IsDeleted)
+                return "Post does not exist or is deleted";
+
+            postToDelete.IsDeleted = true;
+            await _context.SaveChangesAsync();
+            return "Post deleted";
+        }
+        public async Task<string> LikePostAsync(int id)
+        {
+            var postToLike = await _context.Posts.FindAsync(id);
+            if (postToLike is null || !postToLike.IsDeleted)
+                return "Post does not exist or is deleted";
+
+            postToLike.Likes += 1;
+            await _context.SaveChangesAsync();
+            return "Post Liked";
+        }
+        public async Task<string> UnLikePostAsync(int id)
+        {
+            var postToLike = await _context.Posts.FindAsync(id);
+            if (postToLike is null || !postToLike.IsDeleted)
+                return "Post does not exist or is deleted";
+
+            if (postToLike.Likes >= 0)
+                postToLike.Likes -= 1;
+            await _context.SaveChangesAsync();
+            return "Post unliked";
         }
     }
 }

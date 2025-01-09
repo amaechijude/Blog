@@ -41,7 +41,7 @@ namespace Blog.Repository
             {
                 Email = registerUser.Email,
                 Username = registerUser.Username,
-                JoinedOn = DateTime.Now
+                JoinedOn = DateTime.UtcNow
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, registerUser.Password);
             _context.Users.Add(user);
