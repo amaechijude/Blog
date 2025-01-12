@@ -13,8 +13,8 @@ namespace Blog.DTOs
         public string? FullName { get; set; }
         public string? Username { get; set; }
         public string? AvatarURL { get; set; }
-        public ICollection<Post> Posts {get; set;} = [];
         public DateTime JoinedOn { get; set; }
+        public ICollection<Post> Posts {get; set;} = [];
 
     }
     public class LoginUserDTO

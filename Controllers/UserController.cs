@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blog.DataContext;
 using Blog.DTOs;
+using Blog.Models;
 using Blog.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,17 @@ namespace Blog.Controllers
             if (user is null)
                 return NotFound("User doest not exist or is deleted");
 
-            return Ok(user);
+            ICollection<Post> posts = await _context.Posts.Where(uid => uid.UserId == user.Id).ToListAsync();
+            var userView = new UserProfileDTO
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Username = user.Username,
+                AvatarURL = user.AvatarURL,
+                JoinedOn = user.JoinedOn,
+                Posts = posts
+            };
+            return Ok(userView);
         }
         [HttpGet]
         public async Task<IActionResult> AllUsers()
