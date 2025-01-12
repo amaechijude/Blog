@@ -11,15 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Repository
 {
-    public interface IPostRepository
-    {
-        Task<PostViewDTO> CreatePostAsync(CreatePostDTO createPost);
-        Task<IEnumerable<PostViewDTO>> GetAllPostAsync();
-        Task<PostViewDTO> GetPostByIdAsync(int Id);
-        Task<PostViewDTO> UpdatePostAsync(int Id, UpdatePostDTO updatePost);
-        Task<string> DeletePostAsync(int Id);
-    }
-    public class PostRepository(AppDbContext context)// : IPostRepository
+    public class PostRepository(AppDbContext context) : IPostRepository
     {
         private readonly AppDbContext _context = context;
 
@@ -73,14 +65,15 @@ namespace Blog.Repository
             };
             return postView;
         }
-        public async Task<IEnumerable<Post>?> GetAllPosts()
+        public async Task<IEnumerable<PostViewDTO>> GetAllPostAsync()
         {
             var posts = await _context.Posts
                 .Where(p => !p.IsDeleted)
                 .ToListAsync();
-            if (posts is null || !posts.Any())
-                return null;
-            return posts is null || !posts.Any() ? null : posts;
+
+            if (posts is null || posts.Count == 0)
+                return [];
+            return ;
         }
 
         public async Task<Post?> GetPostById(int Id)
