@@ -13,6 +13,6 @@ namespace Blog.Models
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdatedAt { get; set; }
         public int? UserId { get; set; }
-        public User User { get; set; }
+        // public User User { get; set; }
     }
 }

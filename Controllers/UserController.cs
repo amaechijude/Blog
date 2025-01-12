@@ -47,7 +47,7 @@ namespace Blog.Controllers
                 JoinedOn = user.JoinedOn,
                 Posts = posts
             };
-            return Ok(userView);
+            return Ok(posts);
         }
         [HttpGet]
         public async Task<IActionResult> AllUsers()
