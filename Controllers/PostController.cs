@@ -13,16 +13,16 @@ namespace Blog.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PostController(PostRepository postRepository) : ControllerBase
+    public class PostController(IPostRepository postRepository) : ControllerBase
     {
-       private readonly PostRepository _postRepository = postRepository;
+       private readonly IPostRepository _postRepository = postRepository;
 
         [HttpGet]
         public async Task<IActionResult> GetPosts()
         {
            var posts = await _postRepository.GetAllPostAsync();
-           if (posts is null)
-                return NotFound("Posts not found");
+           if (!posts.Any())
+                return NotFound();
             return Ok(posts);
         }
 

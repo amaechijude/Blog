@@ -15,21 +15,20 @@ namespace Blog.Repository
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<PostViewDTO?> CreatePostAsync(CreatePostDTO createPost, HttpRequest request)
+        public async Task<PostViewDTO> CreatePostAsync(CreatePostDTO createPost, HttpRequest request)
         {
             if (string.IsNullOrWhiteSpace(createPost.Content) || string.IsNullOrWhiteSpace(createPost.Title))
-                return null;
+                return new PostViewDTO {};
 
             var user = _context.Users.FirstOrDefault(u => u.Id == createPost.UserId);
             if (user is null)
-                return null;
+                return new PostViewDTO {};
             var post = new Post()
             {
                 Title = createPost.Title,
                 Content = createPost.Content,
                 CreatedAt = DateTime.UtcNow,
                 UserId = createPost.UserId,
-                User = user;
                 LastUpdatedAt = DateTime.MinValue,
                 Likes = 0,
                 IsDeleted = false
@@ -61,7 +60,6 @@ namespace Blog.Repository
                 Content = post.Content,
                 UserId = post.UserId,
                 CreatedAt = post.CreatedAt,
-                User = post.User
             };
             return postView;
         }
@@ -88,18 +86,27 @@ namespace Blog.Repository
             return posts;
         }
 
-        public async Task<Post?> GetPostById(int Id)
+        public async Task<PostViewDTO> GetPostByIdAsync(int Id)
         {
             var post = await _context.Posts.FindAsync(Id);
-
-            return post is null || post.IsDeleted ? null : post;
+            if (post is null)
+                return new PostViewDTO {};
+            var postView = new PostViewDTO()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                UserId = post.UserId,
+                CreatedAt = post.CreatedAt,
+            };
+            return postView;
         }
 
-        public async Task<PostViewDTO?> UpdatePostAsync(int id, [FromBody] UpdatePostDTO updatePost, HttpRequest request)
+        public async Task<PostViewDTO> UpdatePostAsync(int id, [FromBody] UpdatePostDTO updatePost, HttpRequest request)
         {
             var existingPost = await _context.Posts.FindAsync(id);
             if (existingPost is null)
-                return null;
+                return new PostViewDTO {};
 
             if (!string.IsNullOrWhiteSpace(updatePost.Content))
                 existingPost.Content = updatePost.Content;
