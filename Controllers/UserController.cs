@@ -37,7 +37,21 @@ namespace Blog.Controllers
             if (user is null)
                 return NotFound("User doest not exist or is deleted");
 
-            ICollection<Post> posts = await _context.Posts.Where(uid => uid.UserId == user.Id).ToListAsync();
+            List<PostViewDTO> posts = await _context.Posts
+                .Where(uid => uid.UserId == user.Id)
+                .Select(p => new PostViewDTO
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Content = p.Content,
+                    ImageUrl = p.ImageUrl,
+                    Likes = p.Likes,
+                    CreatedAt = p.CreatedAt,
+                    LastUpdatedAt = p.LastUpdatedAt,
+                    UserId = p.UserId
+
+                })
+                .ToListAsync();
             var userView = new UserProfileDTO
             {
                 Id = user.Id,
@@ -47,7 +61,7 @@ namespace Blog.Controllers
                 JoinedOn = user.JoinedOn,
                 Posts = posts
             };
-            return Ok(posts);
+            return Ok(userView);
         }
         [HttpGet]
         public async Task<IActionResult> AllUsers()

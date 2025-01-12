@@ -26,8 +26,7 @@ namespace Blog.Repository
                 FullName = user.FullName,
                 Username = user.Username,
                 AvatarURL = user.AvatarURL,
-                JoinedOn = user.JoinedOn,
-                Posts = user.Posts
+                JoinedOn = user.JoinedOn
             };
             return userProfile;
         }
@@ -55,7 +54,7 @@ namespace Blog.Repository
                 Username = user.Username,
                 AvatarURL = user.AvatarURL,
                 JoinedOn = user.JoinedOn,
-                Posts = user.Posts
+                Posts = []
             };
             return userProfile;
         }
@@ -83,7 +82,6 @@ namespace Blog.Repository
                 Username = user.Username,
                 AvatarURL = user.AvatarURL,
                 JoinedOn = user.JoinedOn,
-                Posts = user.Posts
             };
             return userProfile;
         }
@@ -121,8 +119,7 @@ namespace Blog.Repository
                 FullName = user.FullName,
                 Username = user.Username,
                 AvatarURL = user.AvatarURL,
-                JoinedOn = user.JoinedOn,
-                Posts = user.Posts
+                JoinedOn = user.JoinedOn
             };
             return userProfile;
         }

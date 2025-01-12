@@ -20,6 +20,6 @@ namespace Blog.Models
         public string? AvatarURL { get; set; }
         public bool IsAdmin { get; set; } = false;
         public DateTime JoinedOn { get; set; }
-        public ICollection<Post> Posts { get; set; } = [];
+        public List<Post> Posts { get; set; } = [];
     }
 }

@@ -14,7 +14,7 @@ namespace Blog.DTOs
         public string? Username { get; set; }
         public string? AvatarURL { get; set; }
         public DateTime JoinedOn { get; set; }
-        public ICollection<Post> Posts {get; set;} = [];
+        public List<PostViewDTO> Posts {get; set;} = [];
 
     }
     public class LoginUserDTO
