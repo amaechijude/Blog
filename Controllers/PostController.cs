@@ -20,7 +20,7 @@ namespace Blog.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPosts()
         {
-           var posts = await _postRepository.GetAllPosts();
+           var posts = await _postRepository.GetAllPostAsync();
            if (posts is null)
                 return NotFound("Posts not found");
             return Ok(posts);
@@ -29,7 +29,7 @@ namespace Blog.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById(int id)
         {
-           var post = await _postRepository.GetPostById(id);
+           var post = await _postRepository.GetPostByIdAsync(id);
            if (post is null)
                 return NotFound("Post is deleted or does not exist");
 

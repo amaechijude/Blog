@@ -69,11 +69,23 @@ namespace Blog.Repository
         {
             var posts = await _context.Posts
                 .Where(p => !p.IsDeleted)
+                .Select(p => new PostViewDTO
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Content = p.Content,
+                    ImageUrl = p.ImageUrl,
+                    Likes = p.Likes,
+                    CreatedAt = p.CreatedAt,
+                    LastUpdatedAt = p.LastUpdatedAt,
+                    UserId = p.UserId
+
+                })
                 .ToListAsync();
 
             if (posts is null || posts.Count == 0)
                 return [];
-            return ;
+            return posts;
         }
 
         public async Task<Post?> GetPostById(int Id)
