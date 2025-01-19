@@ -12,7 +12,7 @@ namespace Blog.Repository
 {
     public class UserRepository(AppDbContext context)
     {
-        private readonly IPasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
+        private readonly PasswordHasher<User> _passwordHasher = new();
         private readonly AppDbContext _context = context;
 
         public async Task<UserProfileDTO?> GetUserById(int Id)
