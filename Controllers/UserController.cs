@@ -39,7 +39,7 @@ namespace Blog.Controllers
             {
                 return Ok(await _userService.LoginUserAsync(loginUser));
             }
-            catch (Exception ex){ return BadRequest(ex);}
+            catch (Exception ex){ return BadRequest(ex.Message);}
         }
     }
 }

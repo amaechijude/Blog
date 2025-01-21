@@ -24,6 +24,10 @@ namespace Blog.services
             if (string.IsNullOrWhiteSpace(registerUser.Email) || string.IsNullOrWhiteSpace(registerUser.Password))
                 throw new ArgumentException("Email and Password are required");
 
+            var existingUser = await _userRepository.GetUserByEmailAsync(registerUser.Email);
+                if (existingUser is not null)
+                    throw new Exception($"The Email is already taken");
+
             var userReg = new User
             {
                 Email = registerUser.Email,

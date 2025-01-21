@@ -1,5 +1,6 @@
 using Blog.DTOs;
 using Blog.services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Controllers
@@ -20,13 +21,14 @@ namespace Blog.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetPostById([FromRoute]int id)
         {
             try { return Ok(await _postService.GetPostByIdAsync(id)); }
-            catch(KeyNotFoundException ex) { return BadRequest(ex); }    
+            catch(KeyNotFoundException ex) { return BadRequest(ex.Message); }    
         }
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePost([FromForm] CreatePostDTO createPost)
+        public async Task<IActionResult> CreatePost([FromBody] CreatePostDTO createPost)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -38,7 +40,7 @@ namespace Blog.Controllers
         public async Task<IActionResult> UpdatePost(int id, [FromForm] UpdatePostDTO updatePost)
         {
             try { return Ok(await _postService.UpdatePostAsync(id, updatePost, Request)); }
-            catch (KeyNotFoundException ex) { return BadRequest(ex); }
+            catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
         }
 
         [HttpDelete("{id}")]
@@ -49,7 +51,7 @@ namespace Blog.Controllers
                 await _postService.DeletePostAsync(id);
                 return Ok(new {message = "Post is deleted"});
              }
-            catch (KeyNotFoundException ex) { return BadRequest(ex); }
+            catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
              
         }
     }
