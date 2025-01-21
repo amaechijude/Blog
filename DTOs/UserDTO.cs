@@ -10,9 +10,8 @@ namespace Blog.DTOs
     public class UserProfileDTO
     {
         public int Id { get; set; }
+        public string? Email { get; set; }
         public string? FullName { get; set; }
-        public string? Username { get; set; }
-        public string? AvatarURL { get; set; }
         public DateTime JoinedOn { get; set; }
         public List<PostViewDTO> Posts {get; set;} = [];
 
@@ -36,6 +35,5 @@ namespace Blog.DTOs
     public class UpdateUserDTO
     {
         public string? FullName { get; set; }
-        public IFormFile? Avatar { get; set; }
     }
 }

@@ -13,12 +13,8 @@ namespace Blog.Models
         [Required]
         public string? Email { get; set; }
         [Required]
-        public string? Username { get; set; }
-        [Required]
         public string? PasswordHash { get; set; }
         public string? FullName { get; set; }
-        public string? AvatarURL { get; set; }
-        public bool IsAdmin { get; set; } = false;
         public DateTime JoinedOn { get; set; }
         public List<Post> Posts { get; set; } = [];
     }

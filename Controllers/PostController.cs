@@ -6,6 +6,7 @@ using Blog.DataContext;
 using Blog.DTOs;
 using Blog.Models;
 using Blog.Repository;
+using Blog.services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,39 +14,51 @@ namespace Blog.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PostController(IPostRepository postRepository) : ControllerBase
+    public class PostController(IPostService postService) : ControllerBase
     {
-       private readonly IPostRepository _postRepository = postRepository;
+       private readonly IPostService _postService = postService;
 
         [HttpGet]
-        public async Task<IActionResult> GetPosts()
+        public async Task<IActionResult> GetAllPostsAsync()
         {
-           var posts = await _postRepository.GetAllPostAsync();
+           var posts = await _postService.GetAllPostAsync();
            if (!posts.Any())
-                return NotFound();
+                return NotFound( new {message = "No post found"});
             return Ok(posts);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPostById(int id)
+        public async Task<IActionResult> GetPostById([FromRoute]int id)
         {
-           var post = await _postRepository.GetPostByIdAsync(id);
-           if (post is null)
-                return NotFound("Post is deleted or does not exist");
-
-            return Ok(post);        
+            try { return Ok(await _postService.GetPostByIdAsync(id)); }
+            catch(KeyNotFoundException ex) { return BadRequest(ex); }    
         }
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePost([FromBody] CreatePostDTO createPost)
+        public async Task<IActionResult> CreatePost([FromForm] CreatePostDTO createPost)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var post = await _postRepository.CreatePostAsync(createPost, Request);
-            if (post is null)
-                return BadRequest("Post  creation failed");
+            return Ok(await _postService.CreatePostAsync(createPost, Request));
+        }
 
-            return Ok(post);
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdatePost(int id, [FromForm] UpdatePostDTO updatePost)
+        {
+            try { return Ok(await _postService.UpdatePostAsync(id, updatePost, Request)); }
+            catch (KeyNotFoundException ex) { return BadRequest(ex); }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePostByIdAsync(int id)
+        {
+            try 
+            {
+                await _postService.DeletePostAsync(id);
+                return Ok(new {message = "Post is deleted"});
+             }
+            catch (KeyNotFoundException ex) { return BadRequest(ex); }
+             
         }
     }
 }

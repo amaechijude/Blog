@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Blog.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +19,12 @@ namespace Blog.DataContext
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Post>()
+                .HasQueryFilter(p => !p.IsDeleted);
+
             // add unique constraint to email
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
-                .IsUnique();
-
-            // add unique constraint to username
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
                 .IsUnique();
 
             // establish one to many relationship with posts 
@@ -47,7 +41,6 @@ namespace Blog.DataContext
                  {
                      Id = 1,
                      Email = "user1@gmail.com",
-                     Username = "user1",
                      PasswordHash = _passwordHasher.HashPassword(new User(), "password"),
                      JoinedOn = DateTime.UtcNow
                  },
@@ -56,7 +49,6 @@ namespace Blog.DataContext
                 {
                     Id = 2,
                     Email = "user2@gmail.com",
-                    Username = "usertwo",
                     PasswordHash = _passwordHasher.HashPassword(new User(), "password"),
                     JoinedOn = DateTime.UtcNow
                 }
