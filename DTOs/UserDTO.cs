@@ -29,7 +29,7 @@ namespace Blog.DTOs
     public class RegisterUserDTO : LoginUserDTO
     {
         [Required]
-        public string? Username { get; set; }
+        public string? FullName { get; set; }
     }
 
     public class UpdateUserDTO
