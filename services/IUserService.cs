@@ -7,5 +7,6 @@ namespace Blog.services
     {
         Task<UserProfileDTO?> RegisterUser(RegisterUserDTO registerUser);
         Task<UserProfileDTO?> GetUserByIdAsync(int id);
+        Task<JwtUserViewDto> LoginUserAsync(LoginUserDTO loginUserDTO);
     }
 }

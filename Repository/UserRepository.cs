@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Blog.DataContext;
 using Blog.DTOs;
 using Blog.Models;
@@ -46,6 +42,12 @@ namespace Blog.Repository
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        public async Task<User?> GetUserByEmailAsync(string userEmail)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == userEmail);
+            return user is null? null : user;
         }
 
     }

@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Blog.DataContext;
 using Blog.DTOs;
-using Blog.Models;
-using Blog.Repository;
 using Blog.services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Controllers
 {

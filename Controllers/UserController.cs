@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Blog.DataContext;
 using Blog.DTOs;
-using Blog.Models;
-using Blog.Repository;
 using Blog.services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Controllers
 {
@@ -18,7 +10,7 @@ namespace Blog.Controllers
     {
         private readonly IUserService _userService = userService;
 
-        [HttpPost("create")]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO registerUser)
         {
             if (!ModelState.IsValid)
@@ -36,6 +28,18 @@ namespace Blog.Controllers
                 return Ok(await _userService.GetUserByIdAsync(id));
             }
             catch(KeyNotFoundException ex) {return BadRequest(ex.Message);}
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginUserAsync(LoginUserDTO loginUser)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState["errors"]);
+            try
+            {
+                return Ok(await _userService.LoginUserAsync(loginUser));
+            }
+            catch (Exception ex){ return BadRequest(ex);}
         }
     }
 }

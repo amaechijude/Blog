@@ -7,6 +7,6 @@ namespace Blog.Repository
     {
         Task<UserProfileDTO> GetUserByIdAsync(int userId);
         Task<User> RegisterUserAsync(User user);
-        // Task<User> UpdateUserAsync(User user);
+        Task<User?> GetUserByEmailAsync(string userEmail);
     }
 }

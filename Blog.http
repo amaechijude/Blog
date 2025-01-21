@@ -1,33 +1,23 @@
 @Blog_HostAddress = http://localhost:5118
 
-GET {{Blog_HostAddress}}/api/post/
+{{Blog_HostAddress}}/api/user/
 
 ###
-GET {{Blog_HostAddress}}/api/user/1
-
-###
-GET {{Blog_HostAddress}}/api/user/
-
-###
-POST {{Blog_HostAddress}}/api/user/create/ HTTP/1.1
+POST {{Blog_HostAddress}}/api/user/register/ HTTP/1.1
 content-Type: application/json
 
 {
-    "email": "user@email.com",
-    "username": "user1",
+    "email": "amaechi@email.com",
     "password": "password",
-    "fullName": "Amaechi Jude"
+    "fullName": "Amaechi Dotnet"
 }
 
 ###
-GET {{Blog_HostAddress}}/api/post/
-###
-
-POST {{Blog_HostAddress}}/api/post/create/ HTTP/1.1
-content-Type: application/json
+POST {{Blog_HostAddress}}/api/user/login/ HTTP/1.1
+Content-Type: application/json
 
 {
-    "title": "Post two",
-    "content": "Post two content",
-    "userId": 1
+    "email": "amaechi@email.com",
+    "password": "password"
 }
+###
