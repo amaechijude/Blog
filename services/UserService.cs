@@ -36,7 +36,7 @@ namespace Blog.services
             };
             userReg.PasswordHash = _passwordHasher.HashPassword(userReg, registerUser.Password);
 
-            var user = await _userRepository.RegisterUserAsync(userReg);
+            var user = await _userRepository.RegisterUserAsync(userReg) ?? throw new Exception($"Database Connection Error");
             var userProfile = new UserProfileDTO
             {
                 Id = user.Id,

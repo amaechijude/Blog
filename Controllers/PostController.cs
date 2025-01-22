@@ -9,23 +9,30 @@ namespace Blog.Controllers
     [Route("api/[controller]")]
     public class PostController(IPostService postService) : ControllerBase
     {
-       private readonly IPostService _postService = postService;
-
+        private readonly IPostService _postService = postService;
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllPostsAsync()
         {
-           var posts = await _postService.GetAllPostAsync();
-           if (!posts.Any())
-                return NotFound( new {message = "No post found"});
-            return Ok(posts);
+            try
+            {
+                var posts = await _postService.GetAllPostAsync();
+                if (!posts.Any())
+                    return NotFound(new { message = "No post found" });
+                return Ok(posts);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> GetPostById([FromRoute]int id)
+        public async Task<IActionResult> GetPostById([FromRoute] int id)
         {
             try { return Ok(await _postService.GetPostByIdAsync(id)); }
-            catch(KeyNotFoundException ex) { return BadRequest(ex.Message); }    
+            catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
         }
         [HttpPost("create")]
         public async Task<IActionResult> CreatePost([FromBody] CreatePostDTO createPost)
@@ -46,13 +53,13 @@ namespace Blog.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePostByIdAsync(int id)
         {
-            try 
+            try
             {
                 await _postService.DeletePostAsync(id);
-                return Ok(new {message = "Post is deleted"});
-             }
+                return Ok(new { message = "Post is deleted" });
+            }
             catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
-             
+
         }
     }
 }

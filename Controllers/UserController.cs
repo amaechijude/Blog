@@ -15,9 +15,17 @@ namespace Blog.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            var user = await _userService.RegisterUser(registerUser);
-            return Ok(user);
+            try {
+                return Ok(await _userService.RegisterUser(registerUser));
+                }
+            
+            catch (Exception ex)
+            {
+                return BadRequest(new {
+                    status = "faliled",
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpGet("{id}")]
@@ -27,7 +35,13 @@ namespace Blog.Controllers
             {
                 return Ok(await _userService.GetUserByIdAsync(id));
             }
-            catch(KeyNotFoundException ex) {return BadRequest(ex.Message);}
+            catch (KeyNotFoundException ex) 
+            {
+                 return BadRequest(new {
+                    status = "faliled",
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpPost("login")]
@@ -39,7 +53,13 @@ namespace Blog.Controllers
             {
                 return Ok(await _userService.LoginUserAsync(loginUser));
             }
-            catch (Exception ex){ return BadRequest(ex.Message);}
+            catch (Exception ex)
+            {
+                 return BadRequest(new {
+                    status = "faliled",
+                    message = ex.Message
+                });
+            }
         }
     }
 }

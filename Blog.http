@@ -23,12 +23,13 @@ Content-Type: application/json
 ###
 
 GET {{Blog_HostAddress}}/api/post/
+
 ###
 POST {{Blog_HostAddress}}/api/post/create/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "Test post",
+    "title": "Test post about ",
     "content": "This post it a test post",
     "Userid": 1
 }

@@ -6,9 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Blog.Auth
 {
-#pragma warning disable CS9113 // Parameter is unread.
-    public class TokenProvider(IConfiguration configuration)
-#pragma warning restore CS9113 // Parameter is unread.
+    public class TokenProvider
     {
         public string Create(User user)
         {
@@ -28,7 +26,7 @@ namespace Blog.Auth
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = credetials,
                 Issuer = $"{Environment.GetEnvironmentVariable("JWT_ISSUER")}",
-                Audience = $"{Environment.GetEnvironmentVariable("JWT_AUDIENCE")}",
+                Audience = $"{Environment.GetEnvironmentVariable("JWT_AUDIENCE")}"
             };
 
             var handler = new JsonWebTokenHandler();
