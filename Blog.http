@@ -1,6 +1,8 @@
 @Blog_HostAddress = http://localhost:5118
 
-{{Blog_HostAddress}}/api/user/1
+{{Blog_HostAddress}}/api/user/profile/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJVc2VycyIsImlzcyI6IkJsb2dXZWIiLCJleHAiOjE3Mzc3NjA1NjgsInN1YiI6IjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsImlhdCI6MTczNzc1MzM2OCwibmJmIjoxNzM3NzUzMzY4fQ.Jt9RcaRAKwKR2HqZdxn9Kl1sCJMPdMxcfTrRZXDe2M0 
 
 ###
 POST {{Blog_HostAddress}}/api/user/register/ HTTP/1.1
@@ -17,7 +19,7 @@ POST {{Blog_HostAddress}}/api/user/login/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "amaechi@email.com",
+    "email": "user1@gmail.com",
     "password": "password"
 }
 ###

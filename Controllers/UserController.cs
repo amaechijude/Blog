@@ -1,6 +1,9 @@
+using System.Security.Claims;
 using Blog.DTOs;
 using Blog.services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Blog.Controllers
 {
@@ -28,12 +31,17 @@ namespace Blog.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetUserById()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
+                return BadRequest();
             try
             {
-                return Ok(await _userService.GetUserByIdAsync(id));
+                int id = Convert.ToInt32(userId);
+                return Ok(await _userService.GetUserByIdAsync(id)); 
             }
             catch (KeyNotFoundException ex) 
             {

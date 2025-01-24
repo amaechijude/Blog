@@ -9,7 +9,6 @@ namespace Blog.DTOs
         public string? Title { get; set; }
         [Required]
         public string? Content { get; set; }
-        public int UserId {get; set;}
         public IFormFile? Image { get; set; }
     }
 

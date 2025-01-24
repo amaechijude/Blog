@@ -7,11 +7,11 @@ namespace Blog.services
     public class PostService(IPostRepository postRepository) : IPostService
     {
         private readonly IPostRepository _postRepository = postRepository;
-        public async Task<PostViewDTO?> CreatePostAsync(CreatePostDTO createPost, HttpRequest request)
+        public async Task<PostViewDTO?> CreatePostAsync(int userid, CreatePostDTO createPost, HttpRequest request)
         {
             if (string.IsNullOrWhiteSpace(createPost.Content) || string.IsNullOrWhiteSpace(createPost.Title))
                 return null;
-            var user = await _postRepository.GetUser(createPost.UserId);
+            var user = await _postRepository.GetUser(userid);
             if (user is null)
                 return null;
             var imageUrl = createPost.Image is null ? null : await _postRepository.SavePostImageAsync(createPost.Image, request);

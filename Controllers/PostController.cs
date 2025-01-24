@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Blog.DTOs;
 using Blog.services;
 using Microsoft.AspNetCore.Authorization;
@@ -28,19 +29,22 @@ namespace Blog.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<IActionResult> GetPostById([FromRoute] int id)
         {
             try { return Ok(await _postService.GetPostByIdAsync(id)); }
             catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
         }
+
+        [Authorize]
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePost([FromBody] CreatePostDTO createPost)
+        public async Task<IActionResult> CreatePost([FromForm] CreatePostDTO createPost)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            return Ok(await _postService.CreatePostAsync(createPost, Request));
+                
+            var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int userid = Convert.ToInt32(id);
+            return Ok(await _postService.CreatePostAsync(userid, createPost, Request));
         }
 
         [HttpPatch("{id}")]
