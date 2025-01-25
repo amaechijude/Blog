@@ -11,8 +11,8 @@ namespace Blog.Controllers
     public class PostController(IPostService postService) : ControllerBase
     {
         private readonly IPostService _postService = postService;
-        [Authorize]
-        [HttpGet]
+        
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllPostsAsync()
         {
             try
@@ -22,9 +22,9 @@ namespace Blog.Controllers
                     return NotFound(new { message = "No post found" });
                 return Ok(posts);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return Unauthorized(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

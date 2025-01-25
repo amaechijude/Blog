@@ -22,7 +22,7 @@ namespace Blog.Repository
         }
         public async Task<IEnumerable<Post>> GetAllPostAsync()
         {
-            var allPosts = await _context.Posts.ToListAsync();
+            var allPosts = await _context.Posts.OrderBy(p => p.Id).ToListAsync();
             return allPosts;
         }
         public async Task<Post> GetPostByIdAsync(int Id)
