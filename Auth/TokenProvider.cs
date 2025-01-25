@@ -20,7 +20,7 @@ namespace Blog.Auth
                 Subject = new ClaimsIdentity(
                     [
                         new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                        new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                        // new Claim(JwtRegisteredClaimNames.Email, user.Email)
                     ]
                 ),
                 Expires = DateTime.UtcNow.AddHours(2),

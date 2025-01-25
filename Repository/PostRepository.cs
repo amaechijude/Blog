@@ -42,15 +42,18 @@ namespace Blog.Repository
                 ?? throw new KeyNotFoundException("Post not found or is deleted");
             if (existingPost.UserId != userId)
                 throw new KeyNotFoundException("You are not the author");
-                
+            if (existingPost.IsDeleted)
+                throw new KeyNotFoundException("Post is already deleted");
+
             existingPost.IsDeleted = true;
+            await _context.SaveChangesAsync();
         }
         public async Task<string?> SavePostImageAsync(IFormFile imageFile, HttpRequest request)
         {
             if (imageFile == null || imageFile.Length == 0)
                 return null;
 
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Products");
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Posts");
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
 

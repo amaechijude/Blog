@@ -22,7 +22,7 @@ namespace Blog.services
                 CreatedAt = DateTime.UtcNow,
                 UserId = user.Id,
                 ImageUrl = imageUrl,
-                LastUpdatedAt = DateTime.MinValue,
+                LastUpdatedAt = DateTime.UtcNow,
                 Likes = 0,
                 IsDeleted = false
             };
@@ -92,7 +92,7 @@ namespace Blog.services
                 ImageUrl = update.ImageUrl,
                 Likes = update.Likes,
                 CreatedAt = update.CreatedAt,
-                LastUpdatedAt = update.LastUpdatedAt,
+                LastUpdatedAt = DateTime.UtcNow,
                 UserId = update.UserId
             };
         }
