@@ -78,7 +78,7 @@ namespace Blog.services
             var existingPost = await _postRepository.GetPostByIdAsync(Id);
             existingPost.Title = updatePost.Title;
             existingPost.Content = updatePost.Content;
-            
+
             var imageUrl = updatePost.Image is null ? null : await _postRepository.SavePostImageAsync(updatePost.Image, request);
             if (imageUrl != null)
                 existingPost.ImageUrl = imageUrl;
@@ -96,14 +96,14 @@ namespace Blog.services
                 UserId = update.UserId
             };
         }
-
-        public async Task DeletePostAsync(int Id)
+        public async Task DeletePostAsync(int userId, int postId)
         {
-            try
-            {
-                await _postRepository.DeletePostAsync(Id);
-            }
-            catch (KeyNotFoundException) { throw new KeyNotFoundException("Post not found or is already deleted"); }
+            await _postRepository.DeletePostAsync(userId, postId);
+        }
+
+        public async Task<int> LikePostAsync(int userId,  int postId)
+        {
+            return await _postRepository.LikePostAsync(userId, postId);
         }
     }
 }

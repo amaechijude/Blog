@@ -11,7 +11,7 @@ namespace Blog.Repository
         public async Task<User?> GetUser(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
-            return user is null? null : user;
+            return user is null ? null : user;
 
         }
         public async Task<Post> CreatePostAsync(Post createPost)
@@ -36,17 +36,20 @@ namespace Blog.Repository
             await _context.SaveChangesAsync();
             return updatePost;
         }
-        public async Task DeletePostAsync(int Id)
+        public async Task DeletePostAsync(int userId, int postId)
         {
-            var existingPost = await GetPostByIdAsync(Id)
+            var existingPost = await GetPostByIdAsync(postId)
                 ?? throw new KeyNotFoundException("Post not found or is deleted");
+            if (existingPost.UserId != userId)
+                throw new KeyNotFoundException("You are not the author");
+                
             existingPost.IsDeleted = true;
         }
         public async Task<string?> SavePostImageAsync(IFormFile imageFile, HttpRequest request)
         {
             if (imageFile == null || imageFile.Length == 0)
                 return null;
-                
+
             var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Products");
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
@@ -61,5 +64,22 @@ namespace Blog.Repository
             return imageUrl;
         }
 
-         }
+        public async Task<int> LikePostAsync(int userId,  int postId)
+        {
+            var post = await _context.Posts.FindAsync(postId);
+            var user = await _context.Users.FindAsync(userId);
+            if (post is null || user is null)
+                throw new Exception("Post no longer exist");
+
+            var like = await _context.LikePosts.Where(l => l.UserId == userId && l.PostId == postId).ToListAsync();
+            if (like.Count > 0)
+                throw new Exception("You have already liked the post");
+
+            var newLike = new LikePost {UserId=userId, PostId=postId};
+            _context.LikePosts.Add(newLike);
+            post.Likes += 1;
+            await _context.SaveChangesAsync();
+            return post.Likes;
+        }
+    }
 }

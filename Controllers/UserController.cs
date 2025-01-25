@@ -3,7 +3,6 @@ using Blog.DTOs;
 using Blog.services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Blog.Controllers
 {
@@ -18,13 +17,15 @@ namespace Blog.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            try {
+            try
+            {
                 return Ok(await _userService.RegisterUser(registerUser));
-                }
-            
+            }
+
             catch (Exception ex)
             {
-                return BadRequest(new {
+                return BadRequest(new
+                {
                     status = "faliled",
                     message = ex.Message
                 });
@@ -37,15 +38,16 @@ namespace Blog.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
-                return BadRequest();
+                return BadRequest("User is not authenticated or not found");
             try
             {
                 int id = Convert.ToInt32(userId);
-                return Ok(await _userService.GetUserByIdAsync(id)); 
+                return Ok(await _userService.GetUserByIdAsync(id));
             }
-            catch (KeyNotFoundException ex) 
+            catch (KeyNotFoundException ex)
             {
-                 return BadRequest(new {
+                return BadRequest(new
+                {
                     status = "faliled",
                     message = ex.Message
                 });
@@ -63,7 +65,8 @@ namespace Blog.Controllers
             }
             catch (Exception ex)
             {
-                 return BadRequest(new {
+                return BadRequest(new
+                {
                     status = "faliled",
                     message = ex.Message
                 });

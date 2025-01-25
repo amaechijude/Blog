@@ -8,7 +8,8 @@ namespace Blog.services
         Task<IEnumerable<PostViewDTO>> GetAllPostAsync();
         Task<PostViewDTO?> GetPostByIdAsync(int Id);
         Task<PostViewDTO> UpdatePostAsync(int Id, UpdatePostDTO updatePost,HttpRequest request);
-        Task DeletePostAsync(int Id);
+        Task DeletePostAsync(int userId, int postId);
+        Task<int> LikePostAsync(int userId,  int postId);
         
     }
 }

@@ -9,7 +9,8 @@ namespace Blog.Repository
         Task<IEnumerable<Post>> GetAllPostAsync();
         Task<Post> GetPostByIdAsync(int Id);
         Task<Post> UpdatePostAsync(Post updatePost);
-        Task DeletePostAsync(int Id);
+        Task DeletePostAsync(int userId, int postId);
         Task<string?> SavePostImageAsync(IFormFile imageFile, HttpRequest request);
+        Task<int> LikePostAsync(int userId,  int postId);
     }
 }

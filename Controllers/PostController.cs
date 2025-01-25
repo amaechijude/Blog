@@ -41,7 +41,7 @@ namespace Blog.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
+
             var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             int userid = Convert.ToInt32(id);
             return Ok(await _postService.CreatePostAsync(userid, createPost, Request));
@@ -54,16 +54,42 @@ namespace Blog.Controllers
             catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePostByIdAsync(int id)
+        [Authorize]
+        [HttpDelete("delete/{postid}")]
+        public async Task<IActionResult> DeletePostByIdAsync([FromRoute] int postid)
         {
+            var userid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userid is null)
+                return BadRequest("User is not authenticated or not found");
+            int userId = Convert.ToInt32(userid);
             try
             {
-                await _postService.DeletePostAsync(id);
+                await _postService.DeletePostAsync(userId, postid);
                 return Ok(new { message = "Post is deleted" });
             }
             catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
+        }
 
+        [Authorize]
+        [HttpPost("like/{postId}")]
+        public async Task<IActionResult> LikePostAsync([FromRoute] int postId)
+        {
+            var userid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userid is null)
+                return BadRequest("User is not authenticated or not found");
+            int userId = Convert.ToInt32(userid);
+            try
+            {
+                return Ok(await _postService.LikePostAsync(userId, postId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = "faliled",
+                    message = ex.Message
+                });
+            }
         }
     }
 }
