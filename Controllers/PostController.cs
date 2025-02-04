@@ -11,28 +11,20 @@ namespace Blog.Controllers
     public class PostController(IPostService postService) : ControllerBase
     {
         private readonly IPostService _postService = postService;
-        
+
         [HttpGet("all")]
         public async Task<IActionResult> GetAllPostsAsync()
         {
-            try
-            {
-                var posts = await _postService.GetAllPostAsync();
-                if (!posts.Any())
-                    return NotFound(new { message = "No post found" });
-                return Ok(posts);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var posts = await _postService.GetAllPostAsync();
+            if (!posts.Any())
+                return NotFound(new { message = "No post found" });
+            return Ok(posts);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById([FromRoute] int id)
         {
-            try { return Ok(await _postService.GetPostByIdAsync(id)); }
-            catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
+            return Ok(await _postService.GetPostByIdAsync(id));
         }
 
         [Authorize]
@@ -50,8 +42,7 @@ namespace Blog.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdatePost(int id, [FromForm] UpdatePostDTO updatePost)
         {
-            try { return Ok(await _postService.UpdatePostAsync(id, updatePost, Request)); }
-            catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
+            return Ok(await _postService.UpdatePostAsync(id, updatePost, Request));
         }
 
         [Authorize]
@@ -62,12 +53,8 @@ namespace Blog.Controllers
             if (userid is null)
                 return BadRequest("User is not authenticated or not found");
             int userId = Convert.ToInt32(userid);
-            try
-            {
-                await _postService.DeletePostAsync(userId, postid);
-                return Ok(new { message = "Post is deleted" });
-            }
-            catch (KeyNotFoundException ex) { return BadRequest(ex.Message); }
+            await _postService.DeletePostAsync(userId, postid);
+            return Ok(new { message = "Post is deleted" });
         }
 
         [Authorize]
@@ -77,19 +64,9 @@ namespace Blog.Controllers
             var userid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userid is null)
                 return BadRequest("User is not authenticated or not found");
+
             int userId = Convert.ToInt32(userid);
-            try
-            {
-                return Ok(await _postService.LikePostAsync(userId, postId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = "faliled",
-                    message = ex.Message
-                });
-            }
+            return Ok(await _postService.LikePostAsync(userId, postId));
         }
     }
 }

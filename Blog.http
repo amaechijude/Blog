@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 ###
 
-GET {{Blog_HostAddress}}/api/post/
+GET {{Blog_HostAddress}}/api/post/98
 
 ###
 POST {{Blog_HostAddress}}/api/post/create/ HTTP/1.1

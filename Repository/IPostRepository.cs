@@ -1,4 +1,5 @@
-﻿using Blog.Models;
+﻿using Blog.DTOs;
+using Blog.Models;
 
 namespace Blog.Repository
 {
@@ -6,7 +7,7 @@ namespace Blog.Repository
     {
         Task<User?> GetUser(int userId);
         Task<Post> CreatePostAsync(Post createPost);
-        Task<IEnumerable<Post>> GetAllPostAsync();
+        Task<IEnumerable<PostViewDTO>> GetAllPostAsync();
         Task<Post> GetPostByIdAsync(int Id);
         Task<Post> UpdatePostAsync(Post updatePost);
         Task DeletePostAsync(int userId, int postId);

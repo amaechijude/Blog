@@ -42,24 +42,12 @@ namespace Blog.services
 
         public async Task<IEnumerable<PostViewDTO>> GetAllPostAsync()
         {
-            var posts = await _postRepository.GetAllPostAsync();
-            return posts.Select(p => new PostViewDTO
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Content = p.Content,
-                ImageUrl = p.ImageUrl,
-                Likes = p.Likes,
-                CreatedAt = p.CreatedAt,
-                LastUpdatedAt = p.LastUpdatedAt,
-                UserId = p.UserId
-            });
+            return await _postRepository.GetAllPostAsync();
         }
 
         public async Task<PostViewDTO?> GetPostByIdAsync(int Id)
         {
-            var post = await _postRepository.GetPostByIdAsync(Id)
-                ?? throw new KeyNotFoundException("Post not found or is deleted");
+            var post = await _postRepository.GetPostByIdAsync(Id);
             return new PostViewDTO
             {
                 Id = post.Id,

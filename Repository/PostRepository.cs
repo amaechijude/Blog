@@ -1,4 +1,5 @@
 using Blog.DataContext;
+using Blog.DTOs;
 using Blog.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +11,8 @@ namespace Blog.Repository
 
         public async Task<User?> GetUser(int userId)
         {
-            var user = await _context.Users.FindAsync(userId);
-            return user is null ? null : user;
+            var user = await _context.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User does not exist or is deleted");
+            return user;
 
         }
         public async Task<Post> CreatePostAsync(Post createPost)
@@ -20,10 +21,21 @@ namespace Blog.Repository
             await _context.SaveChangesAsync();
             return createPost;
         }
-        public async Task<IEnumerable<Post>> GetAllPostAsync()
+        public async Task<IEnumerable<PostViewDTO>> GetAllPostAsync()
         {
-            var allPosts = await _context.Posts.OrderBy(p => p.Id).ToListAsync();
-            return allPosts;
+            return await _context.Posts.OrderBy(p => p.Id)
+                .Select(p => new PostViewDTO
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Content = p.Content,
+                    ImageUrl = p.ImageUrl,
+                    Likes = p.Likes,
+                    CreatedAt = p.CreatedAt,
+                    LastUpdatedAt = p.LastUpdatedAt,
+                    UserId = p.UserId
+                })
+                .ToListAsync();
         }
         public async Task<Post> GetPostByIdAsync(int Id)
         {
@@ -63,26 +75,28 @@ namespace Blog.Repository
             using var stream = new FileStream(filePath, FileMode.Create);
             await imageFile.CopyToAsync(stream);
 
-            var imageUrl = $"{request.Scheme}://{request.Host}/Uploads/Posts/{fileName}";
+            var imageUrl = $"{filePath}";
             return imageUrl;
         }
 
-        public async Task<int> LikePostAsync(int userId,  int postId)
+        public async Task<int> LikePostAsync(int userId, int postId)
         {
             var post = await _context.Posts.FindAsync(postId);
             var user = await _context.Users.FindAsync(userId);
             if (post is null || user is null)
-                throw new Exception("Post no longer exist");
+                throw new KeyNotFoundException("Post no longer exist");
 
             var like = await _context.LikePosts.Where(l => l.UserId == userId && l.PostId == postId).ToListAsync();
             if (like.Count > 0)
-                throw new Exception("You have already liked the post");
+                throw new LikedException("You have already liked the post");
 
-            var newLike = new LikePost {UserId=userId, PostId=postId};
+            var newLike = new LikePost { UserId = userId, PostId = postId };
             _context.LikePosts.Add(newLike);
             post.Likes += 1;
             await _context.SaveChangesAsync();
             return post.Likes;
         }
     }
+
+    public class LikedException(string message) : Exception(message) {  }
 }

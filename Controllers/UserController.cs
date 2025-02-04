@@ -17,19 +17,8 @@ namespace Blog.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            try
-            {
-                return Ok(await _userService.RegisterUser(registerUser));
-            }
 
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = "faliled",
-                    message = ex.Message
-                });
-            }
+            return Ok(await _userService.RegisterUser(registerUser));
         }
 
         [Authorize]
@@ -39,19 +28,9 @@ namespace Blog.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
                 return BadRequest("User is not authenticated or not found");
-            try
-            {
-                int id = Convert.ToInt32(userId);
-                return Ok(await _userService.GetUserByIdAsync(id));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return BadRequest(new
-                {
-                    status = "faliled",
-                    message = ex.Message
-                });
-            }
+
+            int id = Convert.ToInt32(userId);
+            return Ok(await _userService.GetUserByIdAsync(id));
         }
 
         [HttpPost("login")]
@@ -59,18 +38,7 @@ namespace Blog.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState["errors"]);
-            try
-            {
-                return Ok(await _userService.LoginUserAsync(loginUser));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = "faliled",
-                    message = ex.Message
-                });
-            }
+            return Ok(await _userService.LoginUserAsync(loginUser));
         }
 
         [Authorize]
