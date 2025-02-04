@@ -53,9 +53,7 @@ namespace Blog.services
             
             var user = await _userRepository.GetUserByEmailAsync(loginUser.Email) ?? throw new Exception ($"User with email {loginUser.Email} does not exist");
 
-#pragma warning disable CS8604 // Possible null reference argument.
             var verifyLogin = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginUser.Password);
-#pragma warning restore CS8604 // Possible null reference argument.
 
             if (verifyLogin == PasswordVerificationResult.Failed)
                 throw new Exception("Email or Password Incorrect");

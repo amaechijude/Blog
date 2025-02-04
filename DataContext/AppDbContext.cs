@@ -10,6 +10,7 @@ namespace Blog.DataContext
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<LikePost> LikePosts {get; set;}
+         public DbSet<RefreshToken> RefreshTokens { get; set; }
         private readonly PasswordHasher<User> _passwordHasher = new();
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

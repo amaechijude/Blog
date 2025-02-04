@@ -72,5 +72,16 @@ namespace Blog.Controllers
                 });
             }
         }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult LogoutUser()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
+                return BadRequest("");
+
+            return Ok("Logged out");
+        }
     }
 }
