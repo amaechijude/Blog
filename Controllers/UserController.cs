@@ -27,7 +27,7 @@ namespace Blog.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
-                return BadRequest("User is not authenticated or not found");
+                return Unauthorized("User is not authenticated");
 
             int id = Convert.ToInt32(userId);
             return Ok(await _userService.GetUserByIdAsync(id));
@@ -37,7 +37,7 @@ namespace Blog.Controllers
         public async Task<IActionResult> LoginUserAsync(LoginUserDTO loginUser)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState["errors"]);
+                return BadRequest(ModelState);
             return Ok(await _userService.LoginUserAsync(loginUser));
         }
 
