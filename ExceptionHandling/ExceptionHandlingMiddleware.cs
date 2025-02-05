@@ -13,6 +13,7 @@ namespace Blog.ExceptionHandling
             try 
             {
                 await _next(context);
+                return;
             }
             catch (KeyNotFoundException ex)
             {
@@ -28,6 +29,8 @@ namespace Blog.ExceptionHandling
 
                 var jsonRespose = JsonSerializer.Serialize(errorResponse);
                 await context.Response.WriteAsync(jsonRespose);
+                
+                return;
             }
             catch (LikedException ex)
             {
@@ -43,6 +46,25 @@ namespace Blog.ExceptionHandling
 
                 var jsonRespose = JsonSerializer.Serialize(errorResponse);
                 await context.Response.WriteAsync(jsonRespose);
+
+                return;
+            }
+            catch (ArgumentException ex)
+            {
+                context.Response.ContentType = httpContentType;
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                var errorResponse = new 
+                {
+                    code = (int)HttpStatusCode.BadRequest,
+                    status = "failed",
+                    message = $"{ex.Message}"
+                };
+
+                var jsonRespose = JsonSerializer.Serialize(errorResponse);
+                await context.Response.WriteAsync(jsonRespose);
+                
+                return;
             }
         }
     }

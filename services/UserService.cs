@@ -51,12 +51,12 @@ namespace Blog.services
             if (string.IsNullOrWhiteSpace(loginUser.Email) || string.IsNullOrWhiteSpace(loginUser.Password))
                 throw new ArgumentException("Email and Password are required");
             
-            var user = await _userRepository.GetUserByEmailAsync(loginUser.Email) ?? throw new Exception ($"User with email {loginUser.Email} does not exist");
+            var user = await _userRepository.GetUserByEmailAsync(loginUser.Email) ?? throw new ArgumentException($"User with email {loginUser.Email} does not exist");
 
             var verifyLogin = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginUser.Password);
 
             if (verifyLogin == PasswordVerificationResult.Failed)
-                throw new Exception("Email or Password Incorrect");
+                throw new ArgumentException("Password Incorrect");
 
             var token = _tokenProvider.Create(user);
             // generate JWT
